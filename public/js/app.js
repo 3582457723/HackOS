@@ -52,30 +52,56 @@ class HackOSApp {
 
     showLoginScreen() {
         const loginScreen = document.getElementById('login-screen');
+        loginScreen.classList.remove('hidden');
+        this.renderLoginForm();
+
+        // TABキーで登録モードに切り替え、SHIFT+TABでログインモードに戻す
+        document.addEventListener('keydown', (e) => {
+            if (loginScreen.classList.contains('hidden')) {
+                return;
+            }
+            if (e.key === 'Tab' && !e.shiftKey) {
+                e.preventDefault();
+                this.showRegisterScreen();
+            } else if (e.key === 'Tab' && e.shiftKey) {
+                e.preventDefault();
+                this.renderLoginForm();
+            }
+        });
+    }
+
+    renderLoginForm() {
+        const loginMode = document.getElementById('login-mode');
+        loginMode.innerHTML = `
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" placeholder="Enter username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" placeholder="Enter password" required>
+                </div>
+                <button type="submit" class="btn-login">LOGIN</button>
+            </form>
+            <div class="login-hint">
+                <p>New user? Press <kbd>TAB</kbd> to register</p>
+            </div>
+        `;
+
         const loginForm = document.getElementById('login-form');
         const usernameInput = document.getElementById('username');
         const passwordInput = document.getElementById('password');
-        
-        loginScreen.classList.remove('hidden');
-        
-        // ログインフォーム
+
         loginForm.onsubmit = (e) => {
             e.preventDefault();
             const username = usernameInput.value;
             const password = passwordInput.value;
-            
+
             if (username && password) {
                 this.login(username, password);
             }
         };
-        
-        // TABキーで登録モードに切り替え
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Tab' && loginScreen.classList.contains('visible')) {
-                e.preventDefault();
-                this.showRegisterScreen();
-            }
-        });
     }
 
     login(username, password) {
