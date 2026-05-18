@@ -4,6 +4,7 @@
   "description": "HackOS Frontend - GitHub Pages",
   "scripts": {
     "build": "echo 'Frontend ready for GitHub Pages'",
+    "predeploy": "npm run build",
     "deploy": "gh-pages -d public"
   },
   "devDependencies": {

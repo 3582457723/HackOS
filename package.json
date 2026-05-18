@@ -8,6 +8,7 @@
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
     "build": "echo 'Build complete - ready for deployment'",
+    "predeploy": "npm run build",
     "deploy": "gh-pages -d public",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
