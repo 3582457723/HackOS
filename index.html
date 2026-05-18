@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HackOS - Hacking Simulator</title>
+    <link rel="stylesheet" href="css/ui-common.css">
+    <link rel="stylesheet" href="css/boot.css">
+    <link rel="stylesheet" href="css/desktop.css">
+    <link rel="stylesheet" href="css/terminal.css">
+    <link rel="stylesheet" href="css/network-map.css">
+</head>
+<body>
+    <!-- ブートシーン -->
+    <div id="boot-screen" class="boot-container">
+        <div class="boot-content">
+            <div class="boot-logo">
+                <pre class="ascii-art">
+   __ __          __  ___  ___
+  / // /___ _____/ /__/ _ \/ _ \
+ / // / __ `/ ___/ //_/ // / // /
+/ // / /_/ / /__/ ,< / // / // /
+\_/_/\__,_/\___/_/|_/\___/\___/
+  OPERATING SYSTEM v1.0-ALPHA
+                </pre>
+            </div>
+            <div class="boot-logs" id="boot-logs"></div>
+        </div>
+    </div>
+
+    <!-- ログイン画面 -->
+    <div id="login-screen" class="login-container hidden">
+        <div class="login-box">
+            <h1>HackOS Login</h1>
+            <div id="login-mode">
+                <!-- ログインフォーム -->
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="username">Username:</label>
+                        <input type="text" id="username" placeholder="Enter username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password:</label>
+                        <input type="password" id="password" placeholder="Enter password" required>
+                    </div>
+                    <button type="submit" class="btn-login">LOGIN</button>
+                </form>
+                <div class="login-hint">
+                    <p>New user? Press <kbd>TAB</kbd> to register</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- メインデスクトップ -->
+    <div id="desktop" class="desktop hidden">
+        <!-- ステータスバー（上部） -->
+        <div class="status-bar">
+            <div class="status-left">
+                <span id="current-time">00:00:00</span>
+                <span id="current-date">2026-05-18</span>
+            </div>
+            <div class="status-center">
+                <span id="current-user">user@hackosx</span>
+            </div>
+            <div class="status-right">
+                <span id="memory-usage">RAM: 0%</span>
+                <span id="current-ip">IP: Loading...</span>
+                <span id="battery-status">Battery: 100%</span>
+            </div>
+        </div>
+
+        <!-- メインコンテナ -->
+        <div class="desktop-container">
+            <!-- 左：メモリタスク/ノートパッド -->
+            <div class="left-panel memory-taskbar">
+                <div class="panel-header">MEMORY_TASKBAR</div>
+                <div class="memory-notes" id="memory-notes"></div>
+                <div class="memory-input">
+                    <input type="text" id="quick-note" placeholder="Quick memo...">
+                </div>
+            </div>
+
+            <!-- 中央：メインディスプレイ -->
+            <div class="center-panel main-display">
+                <!-- タブシステム -->
+                <div class="display-tabs">
+                    <button class="tab-btn active" data-tab="main">MAIN</button>
+                    <button class="tab-btn" data-tab="network">NETWORK_MAP</button>
+                    <button class="tab-btn" data-tab="missions">MISSIONS</button>
+                    <button class="tab-btn" data-tab="skills">SKILL_TREE</button>
+                    <button class="tab-btn" data-tab="settings">SETTINGS</button>
+                </div>
+
+                <!-- MAIN タブ -->
+                <div class="tab-content active" id="tab-main">
+                    <div class="info-box">
+                        <h3>Connected Server Info</h3>
+                        <div id="server-info" class="server-info">
+                            <p>Not connected</p>
+                        </div>
+                    </div>
+                    <div class="web-display" id="web-display">
+                        <p>Web content will be displayed here</p>
+                    </div>
+                </div>
+
+                <!-- NETWORK_MAP タブ -->
+                <div class="tab-content" id="tab-network">
+                    <div class="network-map-container">
+                        <canvas id="network-canvas" width="800" height="400"></canvas>
+                    </div>
+                </div>
+
+                <!-- MISSIONS タブ -->
+                <div class="tab-content" id="tab-missions">
+                    <div class="missions-list" id="missions-list"></div>
+                </div>
+
+                <!-- SKILL_TREE タブ -->
+                <div class="tab-content" id="tab-skills">
+                    <div class="skill-tree" id="skill-tree"></div>
+                </div>
+
+                <!-- SETTINGS タブ -->
+                <div class="tab-content" id="tab-settings">
+                    <div class="settings-panel">
+                        <h3>System Settings</h3>
+                        <div id="settings-content"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右：ターミナル -->
+            <div class="right-panel terminal-panel">
+                <div class="terminal-header">
+                    <span>TERMINAL [Connected: <span id="terminal-ip">127.0.0.1</span>]</span>
+                    <button id="terminal-clear" class="btn-small">CLEAR</button>
+                </div>
+                <div class="terminal-output" id="terminal-output"></div>
+                <div class="terminal-input">
+                    <span class="prompt">hackosx@root:~$</span>
+                    <input type="text" id="terminal-input" class="terminal-input-field" autocomplete="off">
+                </div>
+            </div>
+        </div>
+
+        <!-- 下部：ネットワークマップ/スキャナー -->
+        <div class="bottom-panel network-scanner">
+            <div class="scanner-header">
+                <span>BOOT_LOADER - X-Server System</span>
+            </div>
+            <div class="boot-info" id="boot-info">
+                <p>System initialized. Ready for input.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ゲーム内ポップアップ -->
+    <div id="popup-overlay" class="popup-overlay hidden">
+        <div class="popup-box" id="popup-box"></div>
+    </div>
+
+    <!-- ハッキングミニゲーム -->
+    <div id="minigame-container" class="minigame-container hidden">
+        <div class="minigame-content" id="minigame-content"></div>
+    </div>
+
+    <!-- Socket.IO -->
+    <script src="https://cdn.socket.io/4.7.0/socket.io.min.js"></script>
+    
+    <!-- メインスクリプト -->
+    <script src="js/app.js" type="module"></script>
+    <script src="js/boot.js" type="module"></script>
+    <script src="js/desktop.js" type="module"></script>
+    <script src="js/terminal.js" type="module"></script>
+    <script src="js/commands.js" type="module"></script>
+    <script src="js/network-map.js" type="module"></script>
+    <script src="js/missions.js" type="module"></script>
+    <script src="js/skills.js" type="module"></script>
+    <script src="js/minigame.js" type="module"></script>
+</body>
+</html>
