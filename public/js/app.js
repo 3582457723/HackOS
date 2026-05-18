@@ -53,20 +53,58 @@ class HackOSApp {
     showLoginScreen() {
         const loginScreen = document.getElementById('login-screen');
         loginScreen.classList.remove('hidden');
+        this.loginMode = 'login';
+        this.activeLoginIndex = 0;
+        this.renderToggleOptions();
         this.renderLoginForm();
 
-        // TABキーで登録モードに切り替え、SHIFT+TABでログインモードに戻す
-        document.addEventListener('keydown', (e) => {
-            if (loginScreen.classList.contains('hidden')) {
-                return;
-            }
-            if (e.key === 'Tab' && !e.shiftKey) {
-                e.preventDefault();
-                this.showRegisterScreen();
-            } else if (e.key === 'Tab' && e.shiftKey) {
-                e.preventDefault();
-                this.renderLoginForm();
-            }
+        document.addEventListener('keydown', this.handleLoginKeydown.bind(this));
+    }
+
+    handleLoginKeydown(e) {
+        const loginScreen = document.getElementById('login-screen');
+        if (loginScreen.classList.contains('hidden')) {
+            return;
+        }
+        const validKeys = ['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'];
+        if (!validKeys.includes(e.key)) {
+            return;
+        }
+        e.preventDefault();
+
+        if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+            this.activeLoginIndex = 0;
+        } else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+            this.activeLoginIndex = 1;
+        }
+        this.loginMode = this.activeLoginIndex === 0 ? 'login' : 'register';
+        this.renderToggleOptions();
+        if (this.loginMode === 'login') {
+            this.renderLoginForm();
+        } else {
+            this.renderRegisterForm();
+        }
+    }
+
+    renderToggleOptions() {
+        const toggleContainer = document.querySelector('.login-toggle');
+        if (!toggleContainer) return;
+        toggleContainer.innerHTML = `
+            <button type="button" class="toggle-option ${this.loginMode === 'login' ? 'active' : ''}" data-mode="login">LOGIN</button>
+            <button type="button" class="toggle-option ${this.loginMode === 'register' ? 'active' : ''}" data-mode="register">REGISTER</button>
+        `;
+        const buttons = toggleContainer.querySelectorAll('.toggle-option');
+        buttons.forEach(button => {
+            button.onclick = () => {
+                this.loginMode = button.dataset.mode;
+                this.activeLoginIndex = this.loginMode === 'login' ? 0 : 1;
+                this.renderToggleOptions();
+                if (this.loginMode === 'login') {
+                    this.renderLoginForm();
+                } else {
+                    this.renderRegisterForm();
+                }
+            };
         });
     }
 
@@ -85,7 +123,7 @@ class HackOSApp {
                 <button type="submit" class="btn-login">LOGIN</button>
             </form>
             <div class="login-hint">
-                <p>New user? Press <kbd>TAB</kbd> to register</p>
+                <p>Use arrow keys to toggle selection. Press <strong>Enter</strong> or click button.</p>
             </div>
         `;
 
@@ -102,6 +140,46 @@ class HackOSApp {
                 this.login(username, password);
             }
         };
+        usernameInput.focus();
+    }
+
+    renderRegisterForm() {
+        const loginMode = document.getElementById('login-mode');
+        loginMode.innerHTML = `
+            <form id="register-form">
+                <div class="form-group">
+                    <label for="reg-username">Username:</label>
+                    <input type="text" id="reg-username" placeholder="Choose username" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg-password">Password:</label>
+                    <input type="password" id="reg-password" placeholder="Enter password" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg-password-confirm">Confirm Password:</label>
+                    <input type="password" id="reg-password-confirm" placeholder="Confirm password" required>
+                </div>
+                <button type="submit" class="btn-login">REGISTER</button>
+            </form>
+            <div class="login-hint">
+                <p>Use arrow keys to toggle selection. Press <strong>Enter</strong> or click button.</p>
+            </div>
+        `;
+
+        const registerForm = document.getElementById('register-form');
+        registerForm.onsubmit = (e) => {
+            e.preventDefault();
+            const username = document.getElementById('reg-username').value;
+            const password = document.getElementById('reg-password').value;
+            const passwordConfirm = document.getElementById('reg-password-confirm').value;
+
+            if (password === passwordConfirm) {
+                this.register(username, password);
+            } else {
+                alert('Passwords do not match');
+            }
+        };
+        document.getElementById('reg-username').focus();
     }
 
     login(username, password) {

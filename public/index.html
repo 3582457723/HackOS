@@ -32,23 +32,11 @@
     <div id="login-screen" class="login-container hidden">
         <div class="login-box">
             <h1>HackOS Login</h1>
-            <div id="login-mode">
-                <!-- ログインフォーム -->
-                <form id="login-form">
-                    <div class="form-group">
-                        <label for="username">Username:</label>
-                        <input type="text" id="username" placeholder="Enter username" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="password">Password:</label>
-                        <input type="password" id="password" placeholder="Enter password" required>
-                    </div>
-                    <button type="submit" class="btn-login">LOGIN</button>
-                </form>
-                <div class="login-hint">
-                    <p>New user? Press <kbd>TAB</kbd> to register</p>
-                </div>
+            <div class="login-toggle">
+                <button type="button" class="toggle-option active" data-mode="login">LOGIN</button>
+                <button type="button" class="toggle-option" data-mode="register">REGISTER</button>
             </div>
+            <div id="login-mode"></div>
         </div>
     </div>
 
