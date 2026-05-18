@@ -12,22 +12,26 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "homepage": "https://3582457723.github.io/HackOS/",
-  "keywords": ["hacking", "game", "simulator", "multiplayer"],
+  "keywords": [
+    "hacking",
+    "game",
+    "simulator",
+    "multiplayer"
+  ],
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.18.2",
     "socket.io": "^4.7.0",
-    "uuid": "^9.0.1",
-    "cors": "^2.8.5"
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
-    "nodemon": "^3.0.2",
-    "gh-pages": "^6.0.0"
+    "gh-pages": "^6.3.0",
+    "nodemon": "^3.0.2"
   },
   "engines": {
     "node": "18.x",
     "npm": "9.x"
   }
 }
-
