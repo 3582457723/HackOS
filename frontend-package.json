@@ -1,0 +1,12 @@
+{
+  "name": "hackosgame-frontend",
+  "version": "0.1.0",
+  "description": "HackOS Frontend - GitHub Pages",
+  "scripts": {
+    "build": "echo 'Frontend ready for GitHub Pages'",
+    "deploy": "gh-pages -d public"
+  },
+  "devDependencies": {
+    "gh-pages": "^6.0.0"
+  }
+}

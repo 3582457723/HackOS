@@ -1,0 +1,15 @@
+# Render deployment configuration
+
+runtime = "node"
+nodeVersion = "18.0.0"
+
+[build]
+builder = "npm"
+
+[env]
+NODE_ENV = "production"
+PORT = "10000"  # Render's default port
+
+[[envVars]]
+key = "CORS_ORIGIN"
+value = "https://3582457723.github.io"

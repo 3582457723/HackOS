@@ -1,0 +1,371 @@
+/* =============== ターミナルスタイル =============== */
+.terminal-output {
+    font-family: 'Courier New', monospace;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.terminal-output::-webkit-scrollbar {
+    width: 6px;
+}
+
+.terminal-output::-webkit-scrollbar-thumb {
+    background: var(--color-text-secondary);
+}
+
+/* =============== ログレベル色分け =============== */
+.log-timestamp {
+    color: var(--color-text-dim);
+    margin-right: 8px;
+}
+
+.log-level {
+    font-weight: bold;
+    margin-right: 8px;
+}
+
+.log-level.info {
+    color: var(--color-info);
+}
+
+.log-level.warn {
+    color: var(--color-warning);
+}
+
+.log-level.error {
+    color: var(--color-danger);
+}
+
+.log-level.success {
+    color: var(--color-success);
+}
+
+.log-level.debug {
+    color: var(--color-text-secondary);
+}
+
+.log-message {
+    color: var(--color-text-primary);
+}
+
+/* =============== テーブル表示 =============== */
+.terminal-table {
+    width: 100%;
+    margin: 8px 0;
+    font-size: 11px;
+    color: var(--color-text-primary);
+}
+
+.terminal-table-header {
+    color: var(--color-accent);
+    font-weight: bold;
+    border-bottom: 1px solid var(--color-text-secondary);
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+}
+
+.terminal-table-row {
+    padding: 2px 0;
+    border-bottom: 1px solid var(--color-text-dim);
+}
+
+.terminal-table-row:last-child {
+    border-bottom: none;
+}
+
+.terminal-table-cell {
+    display: inline-block;
+    min-width: 100px;
+    padding-right: 15px;
+}
+
+/* =============== パスワード入力 =============== */
+.password-prompt {
+    color: var(--color-accent);
+    margin: 8px 0;
+}
+
+.password-input-field {
+    background-color: var(--color-bg-darker);
+    border: 1px solid var(--color-text-secondary);
+    color: var(--color-text-primary);
+    padding: 8px;
+    font-family: var(--font-family);
+    font-size: 12px;
+    width: 200px;
+    margin: 5px 0;
+}
+
+.password-input-field:focus {
+    outline: none;
+    border-color: var(--color-text-primary);
+    box-shadow: 0 0 8px var(--color-text-primary);
+}
+
+/* =============== ファイル一覧 =============== */
+.file-list {
+    margin: 8px 0;
+    padding: 10px;
+    background-color: var(--color-bg-darker);
+    border: 1px solid var(--color-text-secondary);
+    font-size: 11px;
+}
+
+.file-item {
+    padding: 4px 0;
+    color: var(--color-text-primary);
+}
+
+.file-item.directory {
+    color: var(--color-accent);
+}
+
+.file-item.executable {
+    color: var(--color-success);
+}
+
+.file-item.hidden {
+    color: var(--color-text-secondary);
+}
+
+.file-item.selected {
+    background-color: rgba(0, 255, 0, 0.2);
+    padding-left: 5px;
+}
+
+/* =============== ディレクトリツリー =============== */
+.dir-tree {
+    margin: 8px 0;
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+.tree-item {
+    padding-left: 20px;
+    color: var(--color-text-primary);
+}
+
+.tree-item.directory {
+    color: var(--color-accent);
+    font-weight: bold;
+}
+
+.tree-item.file {
+    color: var(--color-text-secondary);
+}
+
+.tree-branch {
+    color: var(--color-text-dim);
+}
+
+/* =============== スクロール表示パネル =============== */
+.scroll-panel {
+    background-color: var(--color-bg-darker);
+    border: 1px solid var(--color-text-secondary);
+    margin: 8px 0;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.scroll-panel::-webkit-scrollbar {
+    width: 8px;
+}
+
+.scroll-panel::-webkit-scrollbar-thumb {
+    background: var(--color-text-secondary);
+}
+
+/* =============== ステータス表示 =============== */
+.status-indicator {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.status-indicator.online {
+    background-color: var(--color-success);
+    box-shadow: 0 0 5px var(--color-success);
+}
+
+.status-indicator.offline {
+    background-color: var(--color-text-secondary);
+}
+
+.status-indicator.error {
+    background-color: var(--color-danger);
+    animation: pulse-error 1s infinite;
+}
+
+@keyframes pulse-error {
+    0%, 100% { box-shadow: 0 0 5px var(--color-danger); }
+    50% { box-shadow: 0 0 10px var(--color-danger); }
+}
+
+/* =============== コマンド補完ヒント =============== */
+.command-hint {
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    background-color: var(--color-bg-darker);
+    border: 1px solid var(--color-text-secondary);
+    max-height: 200px;
+    overflow-y: auto;
+    min-width: 300px;
+    z-index: 50;
+}
+
+.command-hint-item {
+    padding: 8px 12px;
+    color: var(--color-text-primary);
+    cursor: pointer;
+    border-bottom: 1px solid var(--color-text-dim);
+    font-size: 11px;
+}
+
+.command-hint-item:hover,
+.command-hint-item.selected {
+    background-color: rgba(0, 255, 0, 0.2);
+    color: var(--color-accent);
+}
+
+.command-hint-item.selected {
+    border-left: 2px solid var(--color-text-primary);
+    padding-left: 10px;
+}
+
+/* =============== プログレスバー =============== */
+.progress-bar {
+    width: 100%;
+    height: 15px;
+    background-color: var(--color-bg-darker);
+    border: 1px solid var(--color-text-secondary);
+    margin: 8px 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--color-info), var(--color-accent));
+    width: 0%;
+    transition: width 0.3s ease;
+    box-shadow: inset 0 0 10px rgba(0, 255, 255, 0.5);
+}
+
+.progress-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 10px;
+    color: var(--color-bg-darker);
+    font-weight: bold;
+}
+
+/* =============== スピナー/ローディング =============== */
+.spinner {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-right: 5px;
+}
+
+.spinner::after {
+    content: '';
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border: 2px solid var(--color-text-secondary);
+    border-top-color: var(--color-text-primary);
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* =============== コード表示 =============== */
+.code-block {
+    background-color: var(--color-bg-darker);
+    border-left: 3px solid var(--color-accent);
+    padding: 10px;
+    margin: 8px 0;
+    overflow-x: auto;
+    font-size: 11px;
+    line-height: 1.4;
+}
+
+.code-line-number {
+    color: var(--color-text-dim);
+    margin-right: 10px;
+}
+
+.code-syntax {
+    color: var(--color-info);
+}
+
+.code-string {
+    color: var(--color-success);
+}
+
+.code-comment {
+    color: var(--color-text-secondary);
+    font-style: italic;
+}
+
+/* =============== アラート =============== */
+.alert-box {
+    padding: 12px;
+    margin: 8px 0;
+    border: 1px solid;
+    border-radius: 2px;
+    font-size: 11px;
+}
+
+.alert-info {
+    background-color: rgba(0, 170, 255, 0.1);
+    border-color: var(--color-info);
+    color: var(--color-info);
+}
+
+.alert-warning {
+    background-color: rgba(255, 170, 0, 0.1);
+    border-color: var(--color-warning);
+    color: var(--color-warning);
+}
+
+.alert-error {
+    background-color: rgba(255, 0, 51, 0.1);
+    border-color: var(--color-danger);
+    color: var(--color-danger);
+}
+
+.alert-success {
+    background-color: rgba(0, 255, 0, 0.1);
+    border-color: var(--color-success);
+    color: var(--color-success);
+}
+
+/* =============== マーキアップ =============== */
+.markup-bold {
+    font-weight: bold;
+    color: var(--color-text-primary);
+}
+
+.markup-italic {
+    font-style: italic;
+    color: var(--color-text-secondary);
+}
+
+.markup-underline {
+    text-decoration: underline;
+    color: var(--color-accent);
+}
+
+.markup-strikethrough {
+    text-decoration: line-through;
+    color: var(--color-text-dim);
+}

@@ -1,0 +1,396 @@
+/* =============== ネットワークマップ =============== */
+.network-map-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background-color: var(--color-bg-darker);
+    border: 1px solid var(--color-text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+#network-canvas {
+    background-color: var(--color-bg-darker);
+    cursor: grab;
+    display: block;
+}
+
+#network-canvas:active {
+    cursor: grabbing;
+}
+
+/* =============== ネットワークノード（JavaScript制御） =============== */
+.network-node {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s;
+    z-index: 10;
+}
+
+.network-node.local {
+    width: 50px;
+    height: 50px;
+    background-color: var(--color-info);
+    box-shadow: 0 0 20px var(--color-info);
+    border: 2px solid var(--color-text-primary);
+    font-weight: bold;
+    color: var(--color-bg-darker);
+}
+
+.network-node.connected {
+    width: 35px;
+    height: 35px;
+    background-color: var(--color-success);
+    box-shadow: 0 0 15px var(--color-success);
+    border: 2px solid var(--color-success);
+    color: var(--color-bg-darker);
+    font-weight: bold;
+    font-size: 12px;
+}
+
+.network-node.unconnected {
+    width: 30px;
+    height: 30px;
+    background-color: var(--color-text-secondary);
+    border: 2px solid var(--color-text-secondary);
+    color: var(--color-bg-darker);
+    font-size: 11px;
+}
+
+.network-node.backdoor {
+    width: 30px;
+    height: 30px;
+    background-color: var(--color-danger);
+    box-shadow: 0 0 15px var(--color-danger);
+    border: 2px dashed var(--color-danger);
+    color: var(--color-bg-darker);
+    font-size: 11px;
+}
+
+.network-node:hover {
+    transform: scale(1.2);
+    z-index: 20;
+}
+
+.network-node:hover::after {
+    content: attr(data-ip);
+    position: absolute;
+    bottom: -25px;
+    background-color: var(--color-bg-darker);
+    border: 1px solid var(--color-text-primary);
+    color: var(--color-text-primary);
+    padding: 5px 10px;
+    white-space: nowrap;
+    font-size: 10px;
+    border-radius: 3px;
+    z-index: 30;
+}
+
+.network-node.active {
+    animation: node-pulse 0.6s infinite;
+}
+
+@keyframes node-pulse {
+    0%, 100% {
+        box-shadow: 0 0 15px currentColor;
+    }
+    50% {
+        box-shadow: 0 0 25px currentColor;
+    }
+}
+
+/* =============== ネットワーク接続線 =============== */
+.network-connection {
+    stroke: var(--color-text-secondary);
+    stroke-width: 1;
+    fill: none;
+    opacity: 0.6;
+}
+
+.network-connection.connected {
+    stroke: var(--color-success);
+    stroke-width: 2;
+    opacity: 1;
+    filter: drop-shadow(0 0 3px var(--color-success));
+}
+
+.network-connection.data-flow {
+    stroke: var(--color-info);
+    stroke-width: 2;
+    stroke-dasharray: 5, 5;
+    animation: data-flow 1s linear infinite;
+}
+
+@keyframes data-flow {
+    to {
+        stroke-dashoffset: 10;
+    }
+}
+
+/* =============== ネットワークラベル =============== */
+.network-label {
+    position: absolute;
+    font-size: 10px;
+    color: var(--color-text-secondary);
+    pointer-events: none;
+    white-space: nowrap;
+    text-align: center;
+}
+
+.network-label.connected {
+    color: var(--color-success);
+}
+
+.network-label.firewall {
+    color: var(--color-danger);
+    font-weight: bold;
+}
+
+/* =============== マップ情報パネル =============== */
+.network-info-panel {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: var(--color-bg-dark);
+    border: 1px solid var(--color-text-secondary);
+    padding: 10px;
+    font-size: 10px;
+    max-width: 200px;
+    z-index: 40;
+    border-radius: 3px;
+}
+
+.network-info-title {
+    color: var(--color-accent);
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.network-info-item {
+    color: var(--color-text-primary);
+    margin: 3px 0;
+}
+
+.network-info-item.value {
+    color: var(--color-success);
+}
+
+/* =============== ズーム/パン コントロール =============== */
+.network-controls {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    display: flex;
+    gap: 5px;
+    z-index: 40;
+}
+
+.network-control-btn {
+    background-color: var(--color-bg-dark);
+    border: 1px solid var(--color-text-secondary);
+    color: var(--color-text-primary);
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 3px;
+    transition: all 0.3s;
+}
+
+.network-control-btn:hover {
+    background-color: var(--color-text-secondary);
+    color: var(--color-bg-darker);
+    box-shadow: 0 0 10px var(--color-text-secondary);
+}
+
+/* =============== フィルター/レジェンド =============== */
+.network-legend {
+    position: absolute;
+    bottom: 50px;
+    left: 10px;
+    background-color: var(--color-bg-dark);
+    border: 1px solid var(--color-text-secondary);
+    padding: 8px 12px;
+    font-size: 10px;
+    border-radius: 3px;
+    z-index: 40;
+}
+
+.network-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 3px 0;
+    color: var(--color-text-primary);
+}
+
+.network-legend-icon {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.network-legend-icon.local {
+    background-color: var(--color-info);
+    box-shadow: 0 0 5px var(--color-info);
+}
+
+.network-legend-icon.connected {
+    background-color: var(--color-success);
+}
+
+.network-legend-icon.unconnected {
+    background-color: var(--color-text-secondary);
+}
+
+.network-legend-icon.backdoor {
+    background-color: var(--color-danger);
+    border: 2px dashed var(--color-danger);
+}
+
+/* =============== トレース表示 =============== */
+.trace-timer {
+    position: fixed;
+    top: 50px;
+    right: 20px;
+    font-size: 24px;
+    font-weight: bold;
+    color: var(--color-danger);
+    text-shadow: 0 0 10px var(--color-danger);
+    z-index: 500;
+}
+
+.trace-timer.warning {
+    animation: trace-blink 0.5s infinite;
+}
+
+@keyframes trace-blink {
+    0%, 50%, 100% { opacity: 1; }
+    25%, 75% { opacity: 0.3; }
+}
+
+.trace-bar {
+    position: fixed;
+    top: 90px;
+    right: 20px;
+    width: 200px;
+    height: 20px;
+    background-color: var(--color-bg-dark);
+    border: 2px solid var(--color-danger);
+    z-index: 500;
+}
+
+.trace-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, transparent, var(--color-danger));
+    width: 100%;
+    animation: trace-fill 1s linear;
+}
+
+@keyframes trace-fill {
+    from { width: 100%; }
+    to { width: 0%; }
+}
+
+/* =============== ノード詳細ポップアップ =============== */
+.node-popup {
+    position: absolute;
+    background-color: var(--color-bg-dark);
+    border: 2px solid var(--color-text-primary);
+    border-radius: 3px;
+    padding: 12px;
+    min-width: 200px;
+    max-width: 300px;
+    font-size: 10px;
+    z-index: 100;
+    box-shadow: 0 0 20px rgba(0, 255, 0, 0.3);
+}
+
+.node-popup-title {
+    color: var(--color-accent);
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.node-popup-info {
+    color: var(--color-text-primary);
+    margin: 4px 0;
+}
+
+.node-popup-actions {
+    margin-top: 8px;
+    display: flex;
+    gap: 5px;
+}
+
+.node-popup-action {
+    flex: 1;
+    background-color: var(--color-bg-darker);
+    border: 1px solid var(--color-text-secondary);
+    color: var(--color-text-primary);
+    padding: 4px 8px;
+    cursor: pointer;
+    font-size: 9px;
+    text-align: center;
+    border-radius: 2px;
+}
+
+.node-popup-action:hover {
+    background-color: var(--color-text-secondary);
+    color: var(--color-bg-darker);
+}
+
+/* =============== エラー表示 =============== */
+.network-error {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: var(--color-danger);
+    color: white;
+    padding: 12px 15px;
+    border-radius: 3px;
+    font-size: 11px;
+    z-index: 200;
+    animation: error-appear 0.3s ease;
+}
+
+@keyframes error-appear {
+    from {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* =============== ローディングオーバーレイ =============== */
+.network-loading {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(10, 14, 39, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+}
+
+.network-loading-spinner {
+    font-size: 20px;
+    color: var(--color-accent);
+    animation: spin 1s linear infinite;
+}
